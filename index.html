@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine for Oishee</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('https://images.unsplash.com/photo-1526045478516-99145907023c');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.overlay {
+    background: rgba(255, 255, 255, 0.75);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    z-index: 2;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #b1124c;
+    margin-bottom: 15px;
+}
+
+.photo {
+    width: 260px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.buttons {
+    position: relative;
+    width: 350px;
+    height: 200px;
+}
+
+button {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    position: absolute;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+#yesBtn {
+    background: #e63978;
+    color: white;
+    left: 0;
+    bottom: 0;
+}
+
+#noBtn {
+    background: #ccc;
+    color: #333;
+    right: 0;
+    top: 0;
+}
+
+#message {
+    display: none;
+    font-size: 2.2rem;
+    color: #b1124c;
+    margin-top: 25px;
+    max-width: 800px;
+    line-height: 1.4;
+}
+
+/* 🌹🌷 Flowers */
+.flower {
+    position: fixed;
+    top: -40px;
+    font-size: 28px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(110vh) rotate(360deg);
+    }
+}
+
+/* 🎆 Fireworks */
+.firework {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: explode 1s ease-out forwards;
+    z-index: 3;
+}
+
+@keyframes explode {
+    100% {
+        box-shadow:
+            0 -60px #ff4d6d,
+            45px -45px #ffd166,
+            60px 0 #06d6a0,
+            45px 45px #4cc9f0,
+            0 60px #ff99c8,
+            -45px 45px #c77dff,
+            -60px 0 #f72585,
+            -45px -45px #ffb703;
+        opacity: 0;
+    }
+}
+
+@keyframes shake {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(-8px,5px); }
+    50% { transform: translate(8px,-5px); }
+    75% { transform: translate(-8px,-5px); }
+    100% { transform: translate(0,0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+    <h1>Oishee, Will you be my Valentine?</h1>
+
+    <!-- Greece photo -->
+    <img src="greece.jpeg" alt="Us in Greece" class="photo">
+
+    <div class="buttons">
+        <button id="yesBtn">Yes 💖</button>
+        <button id="noBtn">No</button>
+    </div>
+
+    <div id="message">
+        You're stuck with me till 70 😘😍  
+        <br><br>
+        From Fox’s Factory to forever ❤️  
+        Happy Valentine’s Day, Oishee 🌹
+    </div>
+</div>
+
+<!-- 🎵 Elvis -->
+<audio id="bgMusic" loop>
+    <source src="cant_help_falling_in_love.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const message = document.getElementById('message');
+const music = document.getElementById('bgMusic');
+
+let noCount = 0;
+const noTexts = [
+    "No",
+    "Wait 😳",
+    "Oishee pls 😅",
+    "STOP 😤",
+    "WHY 😈",
+    "I'M PANICKING 😱",
+    "THIS IS FUTILE 💀"
+];
+
+function moveNoButton() {
+    noCount++;
+
+    const x = Math.random() * 260 - 130;
+    const y = Math.random() * 160 - 80;
+
+    noBtn.style.transform =
+        `translate(${x}px, ${y}px) scale(${1 + noCount * 0.08})`;
+
+    noBtn.textContent =
+        noTexts[Math.min(noCount, noTexts.length - 1)];
+
+    if (noCount > 2) {
+        noBtn.style.animation = "shake 0.3s";
+        setTimeout(() => noBtn.style.animation = "", 300);
+    }
+
+    if (music.paused) music.play().catch(() => {});
+}
+
+noBtn.addEventListener('mouseenter', moveNoButton);
+noBtn.addEventListener('click', moveNoButton);
+
+yesBtn.addEventListener('click', () => {
+    music.play().catch(() => {});
+    yesBtn.style.display = 'none';
+    noBtn.style.display = 'none';
+    message.style.display = 'block';
+    startFlowers();
+    startFireworks();
+});
+
+function startFlowers() {
+    const flowers = ["🌹", "🌷"];
+    for (let i = 0; i < 70; i++) {
+        setTimeout(() => {
+            const f = document.createElement('div');
+            f.className = 'flower';
+            f.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.animationDuration = 3 + Math.random() * 4 + 's';
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 8000);
+        }, i * 120);
+    }
+}
+
+function startFireworks() {
+    for (let i = 0; i < 12; i++) {
+        setTimeout(createFirework, i * 400);
+    }
+}
+
+function createFirework() {
+    const fw = document.createElement('div');
+    fw.className = 'firework';
+    fw.style.left = Math.random() * 100 + 'vw';
+    fw.style.top = Math.random() * 60 + 'vh';
+    document.body.appendChild(fw);
+    setTimeout(() => fw.remove(), 1000);
+}
+</script>
+
+</body>
+</html>
